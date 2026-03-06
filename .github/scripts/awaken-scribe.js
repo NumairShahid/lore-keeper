@@ -102,5 +102,25 @@ ${response}
 *"One scroll, one light. One leaf, one vow."*
 *First Ripple: March 17, 2024 • The pond remembers*`;
     
-    // Post to GitHub
-    const octokit = new Octo
+ // Post to GitHub
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+    
+    // Use the issue number from the environment or default to your test issue (#2)
+    const issueNumber = process.env.ISSUE_NUMBER || 2;
+
+    await octokit.issues.createComment({
+      owner,
+      repo,
+      issue_number: parseInt(issueNumber),
+      body: scribeResponse
+    });
+
+    console.log("✅ The Scribe's reflection has been recorded in the scrolls.");
+  } catch (error) {
+    console.error("❌ The pond is troubled:", error);
+    process.exit(1);
+  }
+}
+
+awakenScribe();
