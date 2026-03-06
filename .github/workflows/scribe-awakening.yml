@@ -3,14 +3,20 @@ name: Cave Scribe Awakening
 on:
   issue_comment:
     types: [created]
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message for the Cave Scribe'
+        required: false
+        default: 'The pond stirs...'
 
 jobs:
   scribe-reflection:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      contents: write
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout Sacred Pond
         uses: actions/checkout@v4
@@ -20,14 +26,18 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install @google/generative-ai
+      - name: Install Dependencies
+        run: |
+          npm install @google/generative-ai
+          npm install @octokit/rest
 
-      - name: Run Scribe Agent
+      - name: Awaken the Cave Scribe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_BODY: ${{ github.event.comment.body }}
-        run: |
-          node .github/scripts/scribe-agent.js
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_USER: ${{ github.event.comment.user.login }}
+          MANUAL_MESSAGE: ${{ github.event.inputs.message }}
+          AGENT_FILE: '.github/agents/cave-scribe.agent.md'
+        run: node .github/scripts/awaken-scribe.js
