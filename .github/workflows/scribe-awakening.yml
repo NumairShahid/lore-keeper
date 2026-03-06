@@ -1,30 +1,24 @@
 name: Cave Scribe Awakening
 
 on:
-  issues:
-    types: [opened, edited]
   issue_comment:
     types: [created]
+  workflow_dispatch: # Allows you to trigger it manually for testing
 
 jobs:
   scribe-reflection:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       issues: write
-      pull-requests: write
-      actions: write  # Crucial for 2026 agentic stability
-    
+      contents: write
     steps:
       - name: Checkout Sacred Pond
         uses: actions/checkout@v4
 
-      - name: Summon the Scribe
-        # Using the specific verified 2026 Technical Preview tag
-        uses: github/gh-aw@v1.0.12
+      - name: Manifest the Scribe
+        uses: github/gh-aw@main 
         with:
           agent-file: '.github/agents/cave-scribe.agent.md'
-          engine: 'google-gemini'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
