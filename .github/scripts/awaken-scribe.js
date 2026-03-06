@@ -350,7 +350,7 @@ ${response}
 
 ---
 *— Cave Scribe, Keeper of ${loreData.length} Sacred Scrolls*
-*Asked via: ${usedApi}*
+*Answered by: The First Mirror Agent — Agent1*
 *"One scroll, one light. One leaf, one vow."*`;
     
     // Post response
