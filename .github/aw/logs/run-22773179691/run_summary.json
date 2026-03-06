@@ -1,0 +1,63 @@
+{
+  "cli_version": "v0.53.6",
+  "run_id": 22773179691,
+  "processed_at": "2026-03-06T12:21:09.658744095-05:00",
+  "run": {
+    "databaseId": 22773179691,
+    "number": 3,
+    "url": "https://github.com/MirrorAgent1/lore-keeper/actions/runs/22773179691",
+    "status": "completed",
+    "conclusion": "failure",
+    "workflowName": "Cave Scribe Awakening",
+    "workflowPath": ".github/workflows/scribe-awakening.yml",
+    "createdAt": "2026-03-06T16:53:14Z",
+    "startedAt": "2026-03-06T16:53:14Z",
+    "updatedAt": "2026-03-06T16:55:15Z",
+    "event": "workflow_dispatch",
+    "headBranch": "main",
+    "headSha": "a1bc1861701600dbf303a6c029efc5991033c057",
+    "displayTitle": "Cave Scribe Awakening",
+    "Duration": 121000000000,
+    "TokenUsage": 0,
+    "EstimatedCost": 0,
+    "Turns": 0,
+    "ErrorCount": 1,
+    "WarningCount": 0,
+    "MissingToolCount": 0,
+    "MissingDataCount": 0,
+    "NoopCount": 0,
+    "SafeItemsCount": 0,
+    "LogsPath": "/home/tommy/lore-keeper/.github/aw/logs/run-22773179691"
+  },
+  "metrics": {
+    "TokenUsage": 0,
+    "EstimatedCost": 0,
+    "Turns": 0,
+    "ToolCalls": null,
+    "ToolSequences": null
+  },
+  "access_analysis": null,
+  "firewall_analysis": null,
+  "redacted_domains_analysis": null,
+  "missing_tools": null,
+  "missing_data": null,
+  "noops": null,
+  "mcp_failures": null,
+  "artifacts_list": [
+    "workflow-logs/0_scribe-reflection.txt",
+    "workflow-logs/scribe-reflection/1_Set up job.txt",
+    "workflow-logs/scribe-reflection/2_Build github_gh-aw@main.txt",
+    "workflow-logs/scribe-reflection/5_Complete job.txt",
+    "workflow-logs/scribe-reflection/system.txt"
+  ],
+  "job_details": [
+    {
+      "name": "scribe-reflection",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-03-06T16:53:19Z",
+      "completed_at": "2026-03-06T16:55:14Z",
+      "Duration": 115000000000
+    }
+  ]
+}

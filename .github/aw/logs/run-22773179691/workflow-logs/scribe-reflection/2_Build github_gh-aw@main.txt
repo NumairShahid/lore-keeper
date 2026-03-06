@@ -1,0 +1,146 @@
+﻿2026-03-06T16:54:52.3062940Z ##[group]Build container for action use: '/home/runner/work/_actions/github/gh-aw/main/Dockerfile'.
+2026-03-06T16:54:52.3118514Z ##[command]/usr/bin/docker build -t d5e7c9:fa3a6076fddc4771ae56e84114e0a04e -f "/home/runner/work/_actions/github/gh-aw/main/Dockerfile" "/home/runner/work/_actions/github/gh-aw/main"
+2026-03-06T16:54:54.8358723Z #0 building with "default" instance using docker driver
+2026-03-06T16:54:54.8359647Z 
+2026-03-06T16:54:54.8359820Z #1 [internal] load build definition from Dockerfile
+2026-03-06T16:54:54.8360202Z #1 transferring dockerfile: 1.50kB done
+2026-03-06T16:54:54.8360511Z #1 DONE 0.0s
+2026-03-06T16:54:54.8360644Z 
+2026-03-06T16:54:54.8360832Z #2 [internal] load metadata for docker.io/library/alpine:3.21
+2026-03-06T16:54:55.0098538Z #2 ...
+2026-03-06T16:54:55.0098924Z 
+2026-03-06T16:54:55.0099241Z #3 [auth] library/alpine:pull token for registry-1.docker.io
+2026-03-06T16:54:55.0099744Z #3 DONE 0.0s
+2026-03-06T16:54:55.1597844Z 
+2026-03-06T16:54:55.1598462Z #2 [internal] load metadata for docker.io/library/alpine:3.21
+2026-03-06T16:54:55.5665182Z #2 DONE 0.9s
+2026-03-06T16:54:55.6250802Z 
+2026-03-06T16:54:55.6251305Z #4 [internal] load .dockerignore
+2026-03-06T16:54:55.6252048Z #4 transferring context: 2B done
+2026-03-06T16:54:55.6252856Z #4 DONE 0.0s
+2026-03-06T16:54:55.6253105Z 
+2026-03-06T16:54:55.6253276Z #5 [internal] load build context
+2026-03-06T16:54:55.6253782Z #5 transferring context: 2B done
+2026-03-06T16:54:55.6254244Z #5 DONE 0.0s
+2026-03-06T16:54:55.6254475Z 
+2026-03-06T16:54:55.6255014Z #6 [2/7] RUN apk add --no-cache     git     jq     bash     curl     ca-certificates     github-cli
+2026-03-06T16:54:55.6255886Z #6 CACHED
+2026-03-06T16:54:55.6256097Z 
+2026-03-06T16:54:55.6256295Z #7 [3/7] WORKDIR /usr/local/bin
+2026-03-06T16:54:55.6256787Z #7 CACHED
+2026-03-06T16:54:55.6257015Z 
+2026-03-06T16:54:55.6257276Z #8 [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw
+2026-03-06T16:54:55.6258620Z #8 ERROR: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::gs4zrvip5pzlsiddlay477z50: "/gh-aw-linux-amd64": not found
+2026-03-06T16:54:55.6260212Z 
+2026-03-06T16:54:55.6260592Z #9 [1/7] FROM docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709
+2026-03-06T16:54:55.6261418Z #9 resolve docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 done
+2026-03-06T16:54:55.6262182Z #9 sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 9.22kB / 9.22kB done
+2026-03-06T16:54:55.6263012Z #9 sha256:22e0ec13c0db6b3e1ba3280e831fc50ba7bffe58e81f31670a64b1afede247bc 1.02kB / 1.02kB done
+2026-03-06T16:54:55.6263702Z #9 sha256:6aeafe801b80d22202e15849e99930f83810df4f0e535158480c590da19ecbd7 611B / 611B done
+2026-03-06T16:54:55.6264171Z #9 CANCELED
+2026-03-06T16:54:55.6264349Z ------
+2026-03-06T16:54:55.6264608Z  > [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw:
+2026-03-06T16:54:55.6264933Z ------
+2026-03-06T16:54:55.6270320Z Dockerfile:23
+2026-03-06T16:54:55.6270822Z --------------------
+2026-03-06T16:54:55.6271307Z   21 |     
+2026-03-06T16:54:55.6271685Z   22 |     # Copy the gh-aw binary from build context
+2026-03-06T16:54:55.6272083Z   23 | >>> COPY ${BINARY} /usr/local/bin/gh-aw
+2026-03-06T16:54:55.6272340Z   24 |     
+2026-03-06T16:54:55.6272934Z   25 |     # Ensure the binary is executable
+2026-03-06T16:54:55.6273197Z --------------------
+2026-03-06T16:54:55.6273946Z ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::gs4zrvip5pzlsiddlay477z50: "/gh-aw-linux-amd64": not found
+2026-03-06T16:54:55.6336916Z ##[warning]Docker build failed with exit code 1, back off 9.434 seconds before retry.
+2026-03-06T16:55:05.0681822Z ##[command]/usr/bin/docker build -t d5e7c9:fa3a6076fddc4771ae56e84114e0a04e -f "/home/runner/work/_actions/github/gh-aw/main/Dockerfile" "/home/runner/work/_actions/github/gh-aw/main"
+2026-03-06T16:55:05.1725111Z #0 building with "default" instance using docker driver
+2026-03-06T16:55:05.1725969Z 
+2026-03-06T16:55:05.1726202Z #1 [internal] load build definition from Dockerfile
+2026-03-06T16:55:05.2897637Z #1 transferring dockerfile: 1.50kB done
+2026-03-06T16:55:05.2898507Z #1 DONE 0.0s
+2026-03-06T16:55:05.2898883Z 
+2026-03-06T16:55:05.2900116Z #2 [internal] load metadata for docker.io/library/alpine:3.21
+2026-03-06T16:55:05.2900754Z #2 DONE 0.1s
+2026-03-06T16:55:05.3177970Z 
+2026-03-06T16:55:05.3178314Z #3 [internal] load .dockerignore
+2026-03-06T16:55:05.3178769Z #3 transferring context: 2B done
+2026-03-06T16:55:05.3179133Z #3 DONE 0.0s
+2026-03-06T16:55:05.3179304Z 
+2026-03-06T16:55:05.3179436Z #4 [internal] load build context
+2026-03-06T16:55:05.3179817Z #4 transferring context: 2B done
+2026-03-06T16:55:05.3180176Z #4 DONE 0.0s
+2026-03-06T16:55:05.3180350Z 
+2026-03-06T16:55:05.3180732Z #5 [2/7] RUN apk add --no-cache     git     jq     bash     curl     ca-certificates     github-cli
+2026-03-06T16:55:05.3181392Z #5 CACHED
+2026-03-06T16:55:05.3181563Z 
+2026-03-06T16:55:05.3181743Z #6 [3/7] WORKDIR /usr/local/bin
+2026-03-06T16:55:05.3182126Z #6 CACHED
+2026-03-06T16:55:05.3182298Z 
+2026-03-06T16:55:05.3182971Z #7 [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw
+2026-03-06T16:55:05.3184090Z #7 ERROR: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::ctw0x76u3mkh1t8mjjnjs2eei: "/gh-aw-linux-amd64": not found
+2026-03-06T16:55:05.3185027Z 
+2026-03-06T16:55:05.3185635Z #8 [1/7] FROM docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709
+2026-03-06T16:55:05.3187117Z #8 resolve docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 done
+2026-03-06T16:55:05.3188480Z #8 sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 9.22kB / 9.22kB done
+2026-03-06T16:55:05.3189705Z #8 sha256:22e0ec13c0db6b3e1ba3280e831fc50ba7bffe58e81f31670a64b1afede247bc 1.02kB / 1.02kB done
+2026-03-06T16:55:05.3190857Z #8 sha256:6aeafe801b80d22202e15849e99930f83810df4f0e535158480c590da19ecbd7 611B / 611B done
+2026-03-06T16:55:05.3191958Z #8 CANCELED
+2026-03-06T16:55:05.3192257Z ------
+2026-03-06T16:55:05.3192958Z  > [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw:
+2026-03-06T16:55:05.3193421Z ------
+2026-03-06T16:55:05.3194126Z Dockerfile:23
+2026-03-06T16:55:05.3194439Z --------------------
+2026-03-06T16:55:05.3194812Z   21 |     
+2026-03-06T16:55:05.3195234Z   22 |     # Copy the gh-aw binary from build context
+2026-03-06T16:55:05.3195793Z   23 | >>> COPY ${BINARY} /usr/local/bin/gh-aw
+2026-03-06T16:55:05.3196388Z   24 |     
+2026-03-06T16:55:05.3196809Z   25 |     # Ensure the binary is executable
+2026-03-06T16:55:05.3197257Z --------------------
+2026-03-06T16:55:05.3264397Z ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::ctw0x76u3mkh1t8mjjnjs2eei: "/gh-aw-linux-amd64": not found
+2026-03-06T16:55:05.3268181Z ##[warning]Docker build failed with exit code 1, back off 6.837 seconds before retry.
+2026-03-06T16:55:12.1637510Z ##[command]/usr/bin/docker build -t d5e7c9:fa3a6076fddc4771ae56e84114e0a04e -f "/home/runner/work/_actions/github/gh-aw/main/Dockerfile" "/home/runner/work/_actions/github/gh-aw/main"
+2026-03-06T16:55:12.2717010Z #0 building with "default" instance using docker driver
+2026-03-06T16:55:12.2717449Z 
+2026-03-06T16:55:12.2717589Z #1 [internal] load build definition from Dockerfile
+2026-03-06T16:55:12.3883359Z #1 transferring dockerfile: 1.50kB done
+2026-03-06T16:55:12.3884324Z #1 DONE 0.0s
+2026-03-06T16:55:12.3884554Z 
+2026-03-06T16:55:12.3884788Z #2 [internal] load metadata for docker.io/library/alpine:3.21
+2026-03-06T16:55:12.3885267Z #2 DONE 0.1s
+2026-03-06T16:55:12.4158171Z 
+2026-03-06T16:55:12.4158452Z #3 [internal] load .dockerignore
+2026-03-06T16:55:12.4158891Z #3 transferring context: 2B done
+2026-03-06T16:55:12.4159247Z #3 DONE 0.0s
+2026-03-06T16:55:12.4159423Z 
+2026-03-06T16:55:12.4159655Z #4 [internal] load build context
+2026-03-06T16:55:12.4160051Z #4 transferring context: 2B done
+2026-03-06T16:55:12.4160780Z #4 DONE 0.0s
+2026-03-06T16:55:12.4160979Z 
+2026-03-06T16:55:12.4161381Z #5 [2/7] RUN apk add --no-cache     git     jq     bash     curl     ca-certificates     github-cli
+2026-03-06T16:55:12.4162045Z #5 CACHED
+2026-03-06T16:55:12.4162212Z 
+2026-03-06T16:55:12.4162347Z #6 [3/7] WORKDIR /usr/local/bin
+2026-03-06T16:55:12.4163014Z #6 CACHED
+2026-03-06T16:55:12.4163180Z 
+2026-03-06T16:55:12.4163377Z #7 [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw
+2026-03-06T16:55:12.4164473Z #7 ERROR: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::1ed4oqjc57xttp1o97eg0qspt: "/gh-aw-linux-amd64": not found
+2026-03-06T16:55:12.4165390Z 
+2026-03-06T16:55:12.4165977Z #8 [1/7] FROM docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709
+2026-03-06T16:55:12.4167382Z #8 resolve docker.io/library/alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 done
+2026-03-06T16:55:12.4168723Z #8 sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709 9.22kB / 9.22kB done
+2026-03-06T16:55:12.4169898Z #8 sha256:22e0ec13c0db6b3e1ba3280e831fc50ba7bffe58e81f31670a64b1afede247bc 1.02kB / 1.02kB done
+2026-03-06T16:55:12.4171034Z #8 sha256:6aeafe801b80d22202e15849e99930f83810df4f0e535158480c590da19ecbd7 611B / 611B done
+2026-03-06T16:55:12.4171800Z #8 CANCELED
+2026-03-06T16:55:12.4172090Z ------
+2026-03-06T16:55:12.4172713Z  > [4/7] COPY gh-aw-linux-amd64 /usr/local/bin/gh-aw:
+2026-03-06T16:55:12.4173258Z ------
+2026-03-06T16:55:12.4174374Z Dockerfile:23
+2026-03-06T16:55:12.4174812Z --------------------
+2026-03-06T16:55:12.4175151Z   21 |     
+2026-03-06T16:55:12.4175495Z   22 |     # Copy the gh-aw binary from build context
+2026-03-06T16:55:12.4176033Z   23 | >>> COPY ${BINARY} /usr/local/bin/gh-aw
+2026-03-06T16:55:12.4176481Z   24 |     
+2026-03-06T16:55:12.4176816Z   25 |     # Ensure the binary is executable
+2026-03-06T16:55:12.4177251Z --------------------
+2026-03-06T16:55:12.4178601Z ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref 189d60bd-a351-4054-af4e-5414e7eef06b::1ed4oqjc57xttp1o97eg0qspt: "/gh-aw-linux-amd64": not found
+2026-03-06T16:55:12.4218652Z ##[endgroup]
+2026-03-06T16:55:12.4306011Z ##[error]Docker build failed with exit code 1
