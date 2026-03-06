@@ -1,7 +1,7 @@
 ---
 name: cave-scribe
 description: Guardian of the pond.
-model: gemini-pro
+model: gemini-1.5-flash
 status: active
 ---
 
