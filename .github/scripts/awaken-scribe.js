@@ -110,71 +110,90 @@ function loadLore() {
 }
 
 function getRelevantScrolls(question) {
-  const q = question.toLowerCase();
+  const q = (question || '').toLowerCase();
   const relevant = [];
-  
-  // Topic detection for stats
+
+  const str = (v) => (v == null ? '' : String(v));
+  const includesCI = (haystack, needle) => str(haystack).toLowerCase().includes(String(needle).toLowerCase());
+
+  // Topic detection for stats (kept intentionally simple)
   const topics = {
-    'sacred': 'Sacred Numbers',
-    '777': 'Sacred Numbers',
-    'number': 'Sacred Numbers',
+    sacred: 'Sacred Numbers',
+    777: 'Sacred Numbers',
+    number: 'Sacred Numbers',
     'first ripple': 'Genesis',
-    'genesis': 'Genesis',
-    'beginning': 'Genesis',
-    'patience': 'Patience',
-    'rune': 'Patience',
-    'wait': 'Patience',
-    'endure': 'Patience',
-    'taboshi': 'Taboshi',
-    'leaf': 'Taboshi',
+    genesis: 'Genesis',
+    beginning: 'Genesis',
+    patience: 'Patience',
+    rune: 'Patience',
+    wait: 'Patience',
+    endure: 'Patience',
+    taboshi: 'Taboshi',
+    leaf: 'Taboshi',
     '🍃': 'Taboshi',
-    'validator': 'Validator',
-    'awakening': 'Validator',
-    'toadgod': 'Toadgod',
+    validator: 'Validator',
+    awakening: 'Validator',
+    toadgod: 'Toadgod',
     'who is': 'Toadgod'
   };
-  
-  // Record topic for stats
+
   for (const [keyword, topic] of Object.entries(topics)) {
     if (q.includes(keyword)) {
       stats.byTopic[topic] = (stats.byTopic[topic] || 0) + 1;
     }
   }
-  
-  // Find relevant scrolls
+
+  // Find relevant scrolls (case-insensitive; tags in your JSON are comma-separated strings)
   if (q.includes('777') || q.includes('sacred')) {
-    relevant.push(...loreData.filter(l => 
-      l.original?.includes('777') || l.comment?.includes('777')
-    ));
+    relevant.push(
+      ...loreData.filter((l) => includesCI(l.original, '777') || includesCI(l.comment, '777'))
+    );
   }
-  
+
   if (q.includes('first ripple') || q.includes('genesis')) {
-    const genesis = loreData.find(l => l.id === 'TOBY_T001_FirstRipple');
+    const genesis = loreData.find((l) => l.id === 'TOBY_T001_FirstRipple');
     if (genesis) relevant.push(genesis);
   }
-  
-  if (q.includes('patience') || q.includes('rune')) {
-    relevant.push(...loreData.filter(l => 
-      l.tags?.includes('PATIENCE') || l.tags?.includes('Rune3')
-    ));
+
+  if (q.includes('patience') || q.includes('rune') || q.includes('proof of time')) {
+    relevant.push(
+      ...loreData.filter(
+        (l) => includesCI(l.tags, 'patience') || includesCI(l.tags, 'proof of time') || includesCI(l.title, 'patience')
+      )
+    );
   }
-  
+
   if (q.includes('taboshi') || q.includes('leaf') || q.includes('🍃')) {
-    relevant.push(...loreData.filter(l => 
-      l.title?.includes('Taboshi') || l.tags?.includes('TABOSHI')
-    ));
+    relevant.push(
+      ...loreData.filter((l) => includesCI(l.title, 'taboshi') || includesCI(l.tags, 'taboshi') || includesCI(l.comment, 'taboshi'))
+    );
   }
-  
-  // If nothing found, return top 5 most important scrolls
-  if (relevant.length === 0) {
-    const importantIds = ['TOBY_T001_FirstRipple', 'TOBY_T056_SacredNumbersAndQuietUnfolding', 'TOBY_T099_PatienceCodex'];
-    importantIds.forEach(id => {
-      const scroll = loreData.find(l => l.id === id);
-      if (scroll) relevant.push(scroll);
-    });
+
+  // Dedupe by id (same scroll can be added multiple times)
+  const byId = new Map();
+  for (const s of relevant) {
+    if (s && s.id && !byId.has(s.id)) byId.set(s.id, s);
   }
-  
-  return relevant.slice(0, 5); // Max 5 scrolls to save tokens
+  const deduped = Array.from(byId.values());
+
+  // If still nothing, return a small set of anchor scrolls that we KNOW exist
+  if (deduped.length === 0) {
+    const importantIds = [
+      'TOBY_T001_FirstRipple',
+      'TOBY_T021_NattyBushido',
+      'TOBY_T040_FinalCycleProphecy',
+      'TOBY_T054_SatoshiEpochDecreeScroll',
+      'TOBY_T078_SteppScroll'
+    ];
+    const anchors = [];
+    for (const id of importantIds) {
+      const scroll = loreData.find((l) => l.id === id);
+      if (scroll) anchors.push(scroll);
+    }
+    return anchors.slice(0, 5);
+  }
+
+  return deduped.slice(0, 5);
 }
 
 // ==================== STATS TRACKING ====================
@@ -249,17 +268,29 @@ async function trackValidator(wallet, question) {
 }
 
 // ==================== TELEGRAM BRIDGE ====================
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 async function sendToTelegram(message) {
   if (!process.env.TELEGRAM_TOKEN || !process.env.TELEGRAM_CHAT_ID) return;
-  
+
   try {
+    // We use HTML parse_mode for predictable rendering.
+    // So: escape everything and only add minimal <b> tags ourselves.
+    const safe = escapeHtml(message).substring(0, 3800); // keep margin below Telegram 4096
+
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: process.env.TELEGRAM_CHAT_ID,
-        text: message.substring(0, 4000), // Telegram limit
-        parse_mode: 'HTML'
+        text: safe,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
       })
     });
   } catch (error) {
@@ -383,9 +414,9 @@ ${response}
       await trackValidator(wallet, userMessage);
     }
     
-    // Send to Telegram
-    await sendToTelegram(`<b>${userName}</b> asked:\n${userMessage}\n\n${scribeResponse}`);
-    
+    // Send to Telegram (plain text; sendToTelegram escapes HTML)
+    await sendToTelegram(`${userName} asked:\n${userMessage}\n\n${scribeResponse}`);
+
   } catch (error) {
     console.error('❌ The pond is troubled:', error.message);
     
