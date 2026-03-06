@@ -65,7 +65,7 @@ Speak now, ancient guardian of the pond:`;
     // Use Gemini 2.0 Flash - which we know exists from the list!
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // FIXED: Using gemini-2.0-flash which is in the list
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
     
     const result = await model.generateContent(fullPrompt);
     const response = await result.response.text();
