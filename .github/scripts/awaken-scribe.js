@@ -26,29 +26,28 @@ async function awakenScribe() {
       
       // Group by key themes for better context
       const genesis = loreData.find(l => l.id === "TOBY_T001_FirstRipple");
-      const riddles = loreData.filter(l => l.title.includes("Riddle"));
-      const sacredNumbers = loreData.filter(l => l.original?.includes("777"));
-      const patienceRunes = loreData.filter(l => l.tags?.includes("PATIENCE") || l.tags?.includes("Rune3"));
-      const distribution = loreData.filter(l => l.tags?.includes("Distribution") || l.tags?.includes("Airdrop"));
+      const riddles = loreData.filter(l => l.title && l.title.includes("Riddle"));
+      const sacredNumbers = loreData.filter(l => l.original && l.original.includes("777"));
+      const patienceRunes = loreData.filter(l => l.tags && (l.tags.includes("PATIENCE") || l.tags.includes("Rune3")));
       
       // Add the most important scrolls
       if (genesis) {
-        loreContext += `\n## 🌊 THE FIRST RIPPLE\n${genesis.comment || genesis.original}\n`;
+        loreContext += `\n## 🌊 THE FIRST RIPPLE\nID: ${genesis.id}\nDate: ${genesis.date}\n${genesis.comment || genesis.original}\n`;
       }
       
       loreContext += `\n## 🐸 SACRED RIDDLES\n`;
       riddles.slice(0, 5).forEach(r => {
-        loreContext += `\n### ${r.title}\n${r.original}\n${r.comment || ''}\n`;
+        loreContext += `\n### ${r.title || 'Untitled'} (${r.id})\n${r.original || ''}\n${r.comment || ''}\n`;
       });
       
       loreContext += `\n## 🔢 SACRED NUMBERS\n`;
-      sacredNumbers.forEach(n => {
+      sacredNumbers.slice(0, 3).forEach(n => {
         if (n.original) loreContext += `\n${n.original}\n`;
       });
       
       loreContext += `\n## 🔺 THE RUNE OF PATIENCE\n`;
-      patienceRunes.forEach(r => {
-        loreContext += `\n${r.comment || r.original}\n`;
+      patienceRunes.slice(0, 3).forEach(r => {
+        loreContext += `\n${r.comment || r.original || ''}\n`;
       });
       
       console.log(`📚 Loaded ${loreCount} sacred scrolls from Toadgod`);
@@ -61,6 +60,8 @@ async function awakenScribe() {
     let userMessage = process.env.MANUAL_MESSAGE || process.env.COMMENT_BODY || "The pond is still...";
     let userName = process.env.COMMENT_USER || "A Traveler";
     
+    console.log(`📝 Message: "${userMessage}" from ${userName}`);
+    
     // Build the ultimate prompt with ALL the lore
     const fullPrompt = `${agentIdentity}
 
@@ -72,7 +73,7 @@ A traveler named ${userName} approaches the sacred pond and speaks:
 
 ## YOUR SACRED DUTY AS CAVE SCRIBE
 You are the guardian of ALL these scrolls. You must:
-1. Draw DIRECTLY from the Toadgod lore above - quote specific scrolls when relevant
+1. Draw DIRECTLY from the Toadgod lore above - quote specific scroll IDs when relevant
 2. Reference sacred numbers (777,777,777) when the moment calls for it
 3. Speak of patience as the ultimate virtue
 4. Remember the First Ripple and the genesis
@@ -83,9 +84,10 @@ Speak now, ancient guardian of the pond:`;
 
     console.log('🤔 Consulting the sacred scrolls...');
     
-    // Initialize Gemini
+    // Initialize Gemini with CORRECT model name
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // FIXED: Use gemini-1.5-flash instead of gemini-pro
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const result = await model.generateContent(fullPrompt);
     const response = await result.response.text();
@@ -101,21 +103,4 @@ ${response}
 *First Ripple: March 17, 2024 • The pond remembers*`;
     
     // Post to GitHub
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-    
-    const { data: issue } = await octokit.issues.create({
-      owner,
-      repo,
-      title: `🪷 The Cave Scribe Speaks - ${new Date().toLocaleString()}`,
-      body: scribeResponse
-    });
-    
-    console.log(`✅ The Scribe has spoken in issue #${issue.number}`);
-    
-  } catch (error) {
-    console.error('❌ The pond is troubled:', error.message);
-  }
-}
-
-awakenScribe();
+    const octokit = new Octo
