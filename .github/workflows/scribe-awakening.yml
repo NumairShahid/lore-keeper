@@ -34,19 +34,6 @@ jobs:
           npm install @octokit/rest
           npm install axios
 
-      - name: List files (debug step)
-        run: |
-          echo "📂 Checking files:"
-          ls -la .github/scripts/
-          ls -la .github/agents/ || echo "agents folder not found"
-          ls -la scribe.agent.md || echo "scribe.agent.md not found at root"
-          ls -la lore/ || echo "lore folder not found"
-
-      - name: Create data directory if it doesn't exist
-        run: |
-          mkdir -p data
-          echo "📁 Data directory ready"
-
       - name: Awaken the Cave Scribe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -54,88 +41,12 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # For manual workflow_dispatch
           MANUAL_MESSAGE: ${{ github.event.inputs.message }}
-          # For issue comments
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_USER: ${{ github.event.comment.user.login }}
-          # For new issues
           NEW_ISSUE_NUMBER: ${{ github.event.issue.number }}
           NEW_ISSUE_TITLE: ${{ github.event.issue.title }}
           NEW_ISSUE_BODY: ${{ github.event.issue.body }}
           NEW_ISSUE_USER: ${{ github.event.issue.user.login }}
-          # Optional Telegram
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: node .github/scripts/awaken-scribe.jsname: Cave Scribe Awakening
-
-on:
-  issues:                # <-- ADD THIS!
-    types: [opened]      # <-- AND THIS!
-  issue_comment:
-    types: [created]
-  workflow_dispatch:
-    inputs:
-      message:
-        description: 'Message for the Cave Scribe'
-        required: false
-        default: 'The pond stirs...'
-
-jobs:
-  scribe-reflection:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: write
-      pull-requests: read
-    steps:
-      - name: Checkout Sacred Pond
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Dependencies
-        run: |
-          npm install @google/generative-ai
-          npm install @octokit/rest
-          npm install axios
-
-      - name: List files (debug step)
-        run: |
-          echo "📂 Checking files:"
-          ls -la .github/scripts/
-          ls -la .github/agents/ || echo "agents folder not found"
-          ls -la scribe.agent.md || echo "scribe.agent.md not found at root"
-          ls -la lore/ || echo "lore folder not found"
-
-      - name: Create data directory if it doesn't exist
-        run: |
-          mkdir -p data
-          echo "📁 Data directory ready"
-
-      - name: Awaken the Cave Scribe
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # For manual workflow_dispatch
-          MANUAL_MESSAGE: ${{ github.event.inputs.message }}
-          # For issue comments
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          COMMENT_USER: ${{ github.event.comment.user.login }}
-          # For new issues (ADD THESE!)
-          NEW_ISSUE_NUMBER: ${{ github.event.issue.number }}
-          NEW_ISSUE_TITLE: ${{ github.event.issue.title }}
-          NEW_ISSUE_BODY: ${{ github.event.issue.body }}
-          NEW_ISSUE_USER: ${{ github.event.issue.user.login }}
-          # Optional Telegram
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: node .github/scripts/awaken-scribe.js
