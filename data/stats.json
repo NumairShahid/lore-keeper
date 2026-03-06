@@ -1,10 +1,8 @@
 {
   "totalQuestions": 1,
-  "byTopic": {
-    "Sacred Numbers": 3
-  },
+  "byTopic": {},
   "byUser": {
     "A Traveler": 1
   },
-  "lastReset": "2026-03-06T20:18:33.852Z"
+  "lastReset": "2026-03-06T20:47:30.934Z"
 }
