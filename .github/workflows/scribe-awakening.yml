@@ -45,16 +45,6 @@ jobs:
       - name: Smoke test (syntax)
         run: node -c .github/scripts/awaken-scribe.js
 
-      - name: Checkout lore-scrolls (private canon)
-        uses: actions/checkout@v4
-        with:
-          repository: MirrorAgent1/lore-scrolls
-          path: lore-scrolls
-          token: ${{ secrets.LORE_REPO_TOKEN }}
-
-      - name: Build scroll index
-        run: npm run build:scroll-index
-
       - name: Awaken the Cave Scribe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

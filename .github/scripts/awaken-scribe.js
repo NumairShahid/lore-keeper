@@ -137,8 +137,7 @@ function loadLore() {
 }
 
 function getRelevantScrolls(question) {
-  const q = (question || '').toLowerCase();
-  const relevant = [];
+  const q = String(question || '').toLowerCase();
 
   const str = (v) => (v == null ? '' : String(v));
   const includesCI = (haystack, needle) => str(haystack).toLowerCase().includes(String(needle).toLowerCase());
@@ -161,7 +160,9 @@ function getRelevantScrolls(question) {
     validator: 'Validator',
     awakening: 'Validator',
     toadgod: 'Toadgod',
-    'who is': 'Toadgod'
+    'who is': 'Toadgod',
+    epoch: 'Epochs',
+    epochs: 'Epochs'
   };
 
   for (const [keyword, topic] of Object.entries(topics)) {
@@ -170,41 +171,69 @@ function getRelevantScrolls(question) {
     }
   }
 
-  // Find relevant scrolls (case-insensitive; tags in your JSON are comma-separated strings)
-  if (q.includes('777') || q.includes('sacred')) {
-    relevant.push(
-      ...loreData.filter((l) => includesCI(l.original, '777') || includesCI(l.comment, '777'))
-    );
+  // Tokenize query for simple scoring retrieval (works for tweet JSON + deep scroll index)
+  const stop = new Set([
+    'the','a','an','and','or','but','to','of','in','on','for','with','is','are','was','were','be','been','being',
+    'what','why','how','who','when','where','which','does','do','did','can','could','should','would','i','we','you',
+    'it','this','that','these','those','me','my','our','your'
+  ]);
+
+  const tokens = q
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .map(t => t.trim())
+    .filter(t => t.length >= 3 && !stop.has(t));
+
+  // Add a few intentional bigrams (helps for terms like "proof of time")
+  const bigrams = [];
+  for (let i = 0; i < Math.min(tokens.length, 10) - 1; i++) {
+    bigrams.push(tokens[i] + ' ' + tokens[i + 1]);
   }
 
-  if (q.includes('first ripple') || q.includes('genesis')) {
-    const genesis = loreData.find((l) => l.id === 'TOBY_T001_FirstRipple');
-    if (genesis) relevant.push(genesis);
+  const terms = Array.from(new Set(tokens.concat(bigrams))).slice(0, 20);
+
+  function scoreScroll(s) {
+    const title = str(s.title);
+    const tags = str(s.tags);
+    const body = str(s.comment) + '\n' + str(s.original);
+
+    let score = 0;
+
+    // Heavier weights for structured fields
+    for (const t of terms) {
+      if (!t) continue;
+      if (includesCI(title, t)) score += 8;
+      if (includesCI(tags, t)) score += 5;
+      if (includesCI(body, t)) score += 2;
+    }
+
+    // A couple explicit boosts for canonical anchors
+    if (q.includes('777') && (includesCI(body, '777') || includesCI(title, '777'))) score += 10;
+    if (q.includes('taboshi') && (includesCI(title, 'taboshi') || includesCI(body, 'taboshi'))) score += 8;
+    if ((q.includes('epoch') || q.includes('epochs')) && includesCI(body, 'epoch')) score += 6;
+
+    return score;
   }
 
-  if (q.includes('patience') || q.includes('rune') || q.includes('proof of time')) {
-    relevant.push(
-      ...loreData.filter(
-        (l) => includesCI(l.tags, 'patience') || includesCI(l.tags, 'proof of time') || includesCI(l.title, 'patience')
-      )
-    );
+  const scored = loreData
+    .map((s) => ({ s, score: scoreScroll(s) }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 25);
+
+  // Dedupe by id and return top 5
+  const out = [];
+  const seen = new Set();
+  for (const x of scored) {
+    const id = x.s && x.s.id;
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(x.s);
+    if (out.length >= 5) break;
   }
 
-  if (q.includes('taboshi') || q.includes('leaf') || q.includes('🍃')) {
-    relevant.push(
-      ...loreData.filter((l) => includesCI(l.title, 'taboshi') || includesCI(l.tags, 'taboshi') || includesCI(l.comment, 'taboshi'))
-    );
-  }
-
-  // Dedupe by id (same scroll can be added multiple times)
-  const byId = new Map();
-  for (const s of relevant) {
-    if (s && s.id && !byId.has(s.id)) byId.set(s.id, s);
-  }
-  const deduped = Array.from(byId.values());
-
-  // If still nothing, return a small set of anchor scrolls that we KNOW exist
-  if (deduped.length === 0) {
+  // If nothing scored, return a small set of anchor scrolls we expect to exist
+  if (out.length === 0) {
     const importantIds = [
       'TOBY_T001_FirstRipple',
       'TOBY_T021_NattyBushido',
@@ -220,7 +249,7 @@ function getRelevantScrolls(question) {
     return anchors.slice(0, 5);
   }
 
-  return deduped.slice(0, 5);
+  return out;
 }
 
 // ==================== STATS TRACKING ====================

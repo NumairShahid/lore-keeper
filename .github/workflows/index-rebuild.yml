@@ -1,0 +1,57 @@
+name: Rebuild Scroll Index
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Daily at 03:17 UTC (lore-friendly, quiet hours)
+    - cron: "17 3 * * *"
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout lore-keeper
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Checkout lore-scrolls (private canon)
+        uses: actions/checkout@v4
+        with:
+          repository: MirrorAgent1/lore-scrolls
+          path: lore-scrolls
+          token: ${{ secrets.LORE_REPO_TOKEN }}
+
+      - name: Build scroll index
+        run: npm run build:scroll-index
+
+      - name: Commit updated index (if changed)
+        run: |
+          set -e
+          if git diff --quiet -- data/scroll_index.json; then
+            echo "No changes to data/scroll_index.json"
+            exit 0
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          git add data/scroll_index.json
+          git commit -m "chore(index): rebuild scroll_index.json"
+          git push
