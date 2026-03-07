@@ -97,13 +97,40 @@ let stats = {
 
 function loadLore() {
   try {
-    const lorePath = path.join(process.env.GITHUB_WORKSPACE, 'lore/toadgod-lore.json');
+    const base = process.env.GITHUB_WORKSPACE || process.cwd();
+
+    // 1) Tweet-based lore index (existing)
+    const lorePath = path.join(base, 'lore/toadgod-lore.json');
     if (fs.existsSync(lorePath)) {
       loreData = JSON.parse(fs.readFileSync(lorePath, 'utf8'));
-      console.log(`📚 Loaded ${loreData.length} sacred scrolls`);
+      console.log(`📚 Loaded ${loreData.length} tweet scrolls (toadgod-lore.json)`);
     } else {
-      console.log('⚠️ No lore.json found');
+      console.log('⚠️ No lore/toadgod-lore.json found');
     }
+
+    // 2) Optional deep canon index built from private markdown repo
+    const deepIndexPath = path.join(base, 'data/scroll_index.json');
+    if (fs.existsSync(deepIndexPath)) {
+      const deep = JSON.parse(fs.readFileSync(deepIndexPath, 'utf8'));
+
+      // Normalize deep index entries into the same shape we already use (id/title/date/tags/comment)
+      const normalized = deep.map((s) => ({
+        id: s.id,
+        date: s.date,
+        title: s.title,
+        url: s.path,
+        tags: Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || ''),
+        original: s.text_preview || '',
+        comment: [s.summary, s.text_preview].filter(Boolean).join('\n\n')
+      }));
+
+      loreData = loreData.concat(normalized);
+      console.log(`📚 Loaded ${deep.length} deep scrolls (data/scroll_index.json)`);
+    } else {
+      console.log('ℹ️ No deep scroll index found (data/scroll_index.json)');
+    }
+
+    console.log(`📚 Total scroll entries available: ${loreData.length}`);
   } catch (error) {
     console.error('❌ Failed to load lore:', error.message);
   }

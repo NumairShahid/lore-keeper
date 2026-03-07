@@ -6,6 +6,9 @@
   "engines": {
     "node": ">=20"
   },
+  "scripts": {
+    "build:scroll-index": "node scripts/build_scroll_index.js"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@octokit/rest": "^21.1.1",
