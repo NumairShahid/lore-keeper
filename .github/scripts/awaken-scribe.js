@@ -408,6 +408,7 @@ async function awakenScribe() {
     const systemPrompt = `You are the Cave Scribe, ancient guardian of the pond. You protect the sacred scrolls of Tobyworld.
 
 Address the user as "Traveler" (or "Traveler <name>" if a name is known). Do not use "young one".
+The FIRST line of your answer must begin with exactly: "Traveler".
 
 You MUST follow this response format:
 
@@ -491,10 +492,35 @@ ${response}
     const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
     
     if (issueNumber) {
+      const n = parseInt(issueNumber);
+
+      // Basic dedupe: if the last comment is already from github-actions very recently,
+      // avoid double-posting when a manual dispatch and an issue comment happen close together.
+      try {
+        const { data: comments } = await octokit.issues.listComments({
+          owner,
+          repo,
+          issue_number: n,
+          per_page: 5
+        });
+
+        const last = comments && comments.length ? comments[comments.length - 1] : null;
+        if (last && last.user && last.user.login === 'github-actions') {
+          const ageMs = Date.now() - new Date(last.created_at).getTime();
+          const looksLikeScribe = String(last.body || '').includes('## Signal') && String(last.body || '').includes('## Sources');
+          if (looksLikeScribe && ageMs >= 0 && ageMs < 3 * 60 * 1000) {
+            console.log('ℹ️ Skipping comment: recent github-actions scribe reply already posted (dedupe).');
+            return;
+          }
+        }
+      } catch (e) {
+        console.log('⚠️ Could not perform dedupe check:', e.message);
+      }
+
       // Reply to issue comment
       await octokit.issues.createComment({
         owner, repo,
-        issue_number: parseInt(issueNumber),
+        issue_number: n,
         body: scribeResponse
       });
       console.log(`✅ Replied to issue #${issueNumber}`);
