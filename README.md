@@ -27,6 +27,7 @@ This repo uses GitHub Issues as the "pond" interface.
 Tip: you can also ask follow-ups by commenting on the same issue.
 
 ## 🔧 For builders (Toadgang)
+- Setup (API keys, secrets, private canon): `docs/SETUP.md`
 - Template guide: `docs/POND_AGENT_TEMPLATE.md`
 - Contributing / local dev: `CONTRIBUTING.md`
 
