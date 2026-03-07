@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏯 Cave Scribe Dashboard · Tobyworld</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #0a1a2f 0%, #0b2b3f 100%);
+            color: #e0f2fe;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .pond {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-align: center;
+            color: #a5f3fc;
+            text-shadow: 0 0 10px #00aaff55, 0 0 20px #0077ff33;
+            margin-bottom: 0.5rem;
+        }
+        .sub {
+            text-align: center;
+            color: #7aa9c4;
+            font-style: italic;
+            margin-bottom: 3rem;
+            border-bottom: 1px dashed #2a4a6e;
+            padding-bottom: 1.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .card {
+            background: #112f44b3;
+            backdrop-filter: blur(8px);
+            border: 1px solid #2b6a9e;
+            border-radius: 24px;
+            padding: 1.8rem 1.5rem;
+            box-shadow: 0 20px 30px -10px #00000080;
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            border-color: #4f9fdb;
+            box-shadow: 0 0 20px #0077ff66;
+        }
+        .card h2 {
+            font-weight: 400;
+            border-left: 5px solid #3b9ae1;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            color: #b3e5fc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 200;
+            color: #ffe484;
+            line-height: 1;
+        }
+        .stat-label {
+            color: #9ec9e6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .topic-item, .user-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #26537e;
+        }
+        .topic-name, .user-name {
+            color: #d2edff;
+        }
+        .topic-count, .user-count {
+            color: #ffe484;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            color: #a5d8ff;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            padding-bottom: 0.8rem;
+        }
+        td {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #1f4a70;
+        }
+        .wallet {
+            font-family: 'Courier New', monospace;
+            color: #b3e5fc;
+        }
+        .date {
+            color: #8db6d0;
+            font-size: 0.85rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: #4f7396;
+            font-size: 0.9rem;
+        }
+        .refresh-note {
+            background: #0b2b3f;
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin-top: 1rem;
+            border: 1px solid #2b6a9e;
+        }
+    </style>
+</head>
+<body>
+    <div class="pond">
+        <h1>🪷 CAVE SCRIBE</h1>
+        <div class="sub">The First Mirror Agent · Guardian of the Pond</div>
+
+        <div class="grid">
+            <!-- STATS CARD -->
+            <div class="card" id="stats-card">
+                <h2>📊 &nbsp; Sacred Ledger</h2>
+                <div id="stats-content">
+                    <p>Loading stats from the pond...</p>
+                </div>
+            </div>
+
+            <!-- TOPICS CARD -->
+            <div class="card">
+                <h2>🔖 &nbsp; Scroll Topics</h2>
+                <div id="topics-content">
+                    <p>Waiting...</p>
+                </div>
+            </div>
+
+            <!-- TOP USERS CARD -->
+            <div class="card">
+                <h2>👥 &nbsp; Frequent Travelers</h2>
+                <div id="users-content">
+                    <p>Waiting...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VALIDATOR LEADERBOARD -->
+        <div class="card" style="margin-top: 1rem;">
+            <h2>🏆 &nbsp; Validator Ledger (wallets mentioned)</h2>
+            <div id="validator-content">
+                <p>Loading validators from the deep...</p>
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: #7aa9c4;">
+                * Currently just recording mentions. Future Agent2 will verify on‑chain.
+            </div>
+        </div>
+
+        <div class="footer">
+            <span class="refresh-note">⏳ updates when the Scribe speaks · data lives in /data/stats.json & validators.csv</span><br>
+            <span style="opacity: 0.6;">"One scroll, one light. One leaf, one vow."</span>
+        </div>
+    </div>
+
+    <script>
+        // GitHub raw URLs (change to your repo)
+        const STATS_URL = 'https://raw.githubusercontent.com/MirrorAgent1/lore-keeper/main/data/stats.json';
+        const VALIDATORS_URL = 'https://raw.githubusercontent.com/MirrorAgent1/lore-keeper/main/data/validators.csv';
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(STATS_URL);
+                if (!res.ok) throw new Error('Stats not found');
+                const stats = await res.json();
+
+                // Update total questions
+                const total = stats.totalQuestions || 0;
+                const statsHtml = `
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="stat-number">${total}</span> <span class="stat-label">total questions</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div><span class="stat-number">${Object.keys(stats.byTopic || {}).length}</span><br><span class="stat-label">topics</span></div>
+                        <div><span class="stat-number">${Object.keys(stats.byUser || {}).length}</span><br><span class="stat-label">travelers</span></div>
+                    </div>
+                    <div style="margin-top: 1rem; font-size:0.8rem; color:#6d9fc5;">last reset: ${new Date(stats.lastReset).toLocaleString()}</div>
+                `;
+                document.getElementById('stats-content').innerHTML = statsHtml;
+
+                // Topics breakdown
+                let topicsHtml = '';
+                if (stats.byTopic && Object.keys(stats.byTopic).length > 0) {
+                    const sorted = Object.entries(stats.byTopic).sort((a,b) => b[1] - a[1]);
+                    topicsHtml = sorted.map(([topic, count]) => `
+                        <div class="topic-item"><span class="topic-name">${topic}</span><span class="topic-count">${count}</span></div>
+                    `).join('');
+                } else {
+                    topicsHtml = '<p>No topics recorded yet.</p>';
+                }
+                document.getElementById('topics-content').innerHTML = topicsHtml;
+
+                // Users breakdown
+                let usersHtml = '';
+                if (stats.byUser && Object.keys(stats.byUser).length > 0) {
+                    const sorted = Object.entries(stats.byUser).sort((a,b) => b[1] - a[1]).slice(0, 10);
+                    usersHtml = sorted.map(([user, count]) => `
+                        <div class="user-item"><span class="user-name">${user}</span><span class="user-count">${count}</span></div>
+                    `).join('');
+                } else {
+                    usersHtml = '<p>No users yet.</p>';
+                }
+                document.getElementById('users-content').innerHTML = usersHtml;
+
+            } catch (error) {
+                document.getElementById('stats-content').innerHTML = '<p style="color:#ffa07a;">Could not reach the ledger. Have the Scribe spoken yet?</p>';
+                console.error(error);
+            }
+        }
+
+        async function fetchValidators() {
+            try {
+                const res = await fetch(VALIDATORS_URL);
+                if (!res.ok) throw new Error('Validators not found');
+                const csv = await res.text();
+                const lines = csv.trim().split('\n');
+                if (lines.length <= 1) {
+                    document.getElementById('validator-content').innerHTML = '<p>No validators recorded yet. Ask the Scribe with a wallet!</p>';
+                    return;
+                }
+
+                // Parse CSV (simple)
+                const headers = lines[0].split(',');
+                const data = lines.slice(1).reverse(); // show newest first
+                let tableHtml = '<table><tr><th>Wallet</th><th>Date</th><th>Question</th></tr>';
+                data.slice(0, 15).forEach(line => {
+                    // naive parse – assumes no commas inside quoted fields
+                    const parts = line.split(',');
+                    if (parts.length >= 3) {
+                        const wallet = parts[0];
+                        const date = new Date(parts[1]).toLocaleString();
+                        const question = parts.slice(2).join(',').replace(/^"|"$/g, '');
+                        tableHtml += `<tr><td class="wallet">${wallet}</td><td class="date">${date}</td><td>${question.substring(0, 30)}...</td></tr>`;
+                    }
+                });
+                tableHtml += '</table>';
+                document.getElementById('validator-content').innerHTML = tableHtml;
+            } catch (error) {
+                document.getElementById('validator-content').innerHTML = '<p>Validator data not yet available.</p>';
+            }
+        }
+
+        fetchStats();
+        fetchValidators();
+        // auto refresh every 60 seconds (optional)
+        setInterval(() => {
+            fetchStats();
+            fetchValidators();
+        }, 60000);
+    </script>
+</body>
+</html>
