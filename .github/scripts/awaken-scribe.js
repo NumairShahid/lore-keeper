@@ -333,17 +333,31 @@ async function awakenScribe() {
     // Load lore
     loadLore();
     
-    // Get user input - HANDLE ALL THREE CASES
-    let userMessage = process.env.MANUAL_MESSAGE || 
-                      process.env.COMMENT_BODY || 
-                      process.env.NEW_ISSUE_BODY || 
+    // Get user input
+    // Priority:
+    // - workflow_dispatch message
+    // - issue comment body
+    // - issue body
+    // - issue title
+    // - default
+    const issueTitle = process.env.NEW_ISSUE_TITLE || '';
+
+    let userMessage = process.env.MANUAL_MESSAGE ||
+                      process.env.COMMENT_BODY ||
+                      process.env.NEW_ISSUE_BODY ||
+                      issueTitle ||
                       "The pond is still...";
-    
-    let userName = process.env.COMMENT_USER || 
-                   process.env.NEW_ISSUE_USER || 
+
+    // If we got a body but it's effectively empty/whitespace, fall back to title.
+    if (!String(userMessage || '').trim() && String(issueTitle || '').trim()) {
+      userMessage = issueTitle;
+    }
+
+    let userName = process.env.COMMENT_USER ||
+                   process.env.NEW_ISSUE_USER ||
                    "A Traveler";
-    
-    let issueNumber = process.env.ISSUE_NUMBER || 
+
+    let issueNumber = process.env.ISSUE_NUMBER ||
                       process.env.NEW_ISSUE_NUMBER;
     
     // Extract wallet if present
