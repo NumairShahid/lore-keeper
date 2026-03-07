@@ -42,12 +42,21 @@ jobs:
       - name: Smoke test (syntax)
         run: node -c .github/scripts/awaken-scribe.js
 
-      - name: Checkout lore-scrolls (private canon)
+      - name: Checkout lore-scrolls (private canon) [with LORE_REPO_TOKEN]
+        if: ${{ secrets.LORE_REPO_TOKEN != '' }}
         uses: actions/checkout@v4
         with:
           repository: MirrorAgent1/lore-scrolls
           path: lore-scrolls
           token: ${{ secrets.LORE_REPO_TOKEN }}
+
+      - name: Checkout lore-scrolls (private canon) [fallback github.token]
+        if: ${{ secrets.LORE_REPO_TOKEN == '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: MirrorAgent1/lore-scrolls
+          path: lore-scrolls
+          token: ${{ github.token }}
 
       - name: Build scroll index
         run: npm run build:scroll-index
