@@ -160,6 +160,14 @@
                     <p>Waiting...</p>
                 </div>
             </div>
+
+            <!-- PROVIDERS CARD -->
+            <div class="card">
+                <h2>🧠 &nbsp; Provider Health <span id="providers-status" style="font-size:0.8rem; opacity:0.75;"></span></h2>
+                <div id="providers-content">
+                    <p>Waiting...</p>
+                </div>
+            </div>
         </div>
 
         <!-- VALIDATOR LEADERBOARD -->
@@ -257,10 +265,39 @@
                 }
                 document.getElementById('users-content').innerHTML = usersHtml;
 
+                // Provider health
+                const byProvider = stats.byProvider || {};
+                let provHtml = '';
+                const names = Object.keys(byProvider);
+                if (names.length === 0) {
+                    provHtml = '<p>No provider stats yet.</p>';
+                    setPanelStatus('providers-status', true, 'empty');
+                } else {
+                    const rows = names
+                      .map((name) => ({ name, ...byProvider[name] }))
+                      .sort((a,b) => (b.success||0) - (a.success||0));
+
+                    provHtml += '<table><tr><th>Provider</th><th>OK</th><th>Fail</th><th>429</th><th>Auth</th><th>Net</th></tr>';
+                    for (const r of rows) {
+                        provHtml += `<tr>
+                          <td>${escapeHtml(r.name)}</td>
+                          <td class="topic-count">${r.success || 0}</td>
+                          <td class="topic-count">${r.failure || 0}</td>
+                          <td class="topic-count">${r.rate_limit || 0}</td>
+                          <td class="topic-count">${r.auth || 0}</td>
+                          <td class="topic-count">${r.transient || 0}</td>
+                        </tr>`;
+                    }
+                    provHtml += '</table>';
+                    setPanelStatus('providers-status', true, '');
+                }
+                document.getElementById('providers-content').innerHTML = provHtml;
+
             } catch (error) {
                 setPanelStatus('stats-status', false, error.message);
                 setPanelStatus('topics-status', false, '');
                 setPanelStatus('users-status', false, '');
+                setPanelStatus('providers-status', false, '');
                 document.getElementById('stats-content').innerHTML = '<p style="color:#ffa07a;">Could not reach the ledger. Have the Scribe spoken yet?</p>';
                 console.error(error);
             }
