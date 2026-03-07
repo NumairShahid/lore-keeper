@@ -1,8 +1,20 @@
 {
   "totalQuestions": 1,
-  "byTopic": {},
+  "byTopic": {
+    "Toadgod": 2
+  },
   "byUser": {
     "MirrorAgent1": 1
   },
-  "lastReset": "2026-03-07T03:55:19.085Z"
+  "byProvider": {
+    "Groq": {
+      "success": 2,
+      "failure": 0,
+      "rate_limit": 0,
+      "auth": 0,
+      "transient": 0,
+      "other": 0
+    }
+  },
+  "lastReset": "2026-03-07T15:25:28.708Z"
 }
