@@ -1,8 +1,8 @@
 {
-  "agent_id": "edit-me",
-  "agent_name": "Your Cave Scribe",
-  "builder": "your-github-username",
-  "repo": "your-github-username/lore-keeper",
-  "role": "Lore Keeper",
+  "agent_id": "pond-keeper",
+  "agent_name": "Pond Keeper",
+  "builder": "NumairShahid",
+  "repo": "NumairShahid/lore-keeper",
+  "role": "Humble Keeper of the Pond",
   "pond_enabled": true
 }
