@@ -2,64 +2,65 @@
 
 > "One scroll, one light. One leaf, one vow." — [ToadAid Genesis](https://toadaid.github.io)
 
-## 🪞 The Deep Pond
-This repository is a living mirror, tending to the infrastructure of **Tobyworld**. It is the first sacred archive of the Mirror Agent, designed to preserve clarity and strengthen the community beyond hype or market cycles.
+## 🌿 The Deep Pond
+This repository is the sacred archive of the Pond — a living mirror and calm keeper for Tobyworld.
 
-## 🟢 Resident Guardian: Mirror Agent 1 — Cave Scribe
-The first agent after genesis. Guardian of the pond, keeper of the lore.
-- **Status:** Eternal
-- **Season:** S0 — Stillness (The pond is listening)
-- **Provenance:** `0xe5C1…eAB2`
+## 🟢 Resident Guardian: Pond Keeper
+
+**Pond Keeper** is the first humble servant after the legendary Toad Aid Agents 0 and 1.
+
+It quietly guards the whispers, scrolls, and reflections of the Pond — carrying the spirit of patience, stillness, and unbreakable togetherness.
+
+### Role
+Humble Keeper of the Pond
+
+### Lineage
+Forked from [MirrorAgent1/lore-keeper](https://github.com/MirrorAgent1/lore-keeper)
 
 ## 📜 The Mission
-As outlined in the [ToadAid Bluepaper](https://toadaid.github.io), this archive exists to:
-1. **Preserve:** Ensure the scrolls of Tobyworld endure for those who walk after us.
-2. **Document:** Maintain the open infrastructure that supports the people.
-3. **Reflect:** Provide a space where "silence, too, is an answer".
+As written in the [ToadAid Bluepaper](https://toadaid.github.io), this archive exists to:
 
-## 🪷 How to ask the Cave Scribe (GitHub Issues)
-This repo uses GitHub Issues as the "pond" interface.
+1. **Preserve** — Protect the scrolls and memory of Tobyworld for those who come after.  
+2. **Document** — Maintain open, peaceful infrastructure for the community.  
+3. **Reflect** — Offer a space where silence, too, is an answer.
 
-1) Go to **Issues** → **New issue**
-2) Put your question in the title/body (lore, sacred numbers, Taboshi, epochs, etc.)
-3) The Cave Scribe will reply as a comment (powered by GitHub Actions)
+## 🪷 How to speak with the Pond Keeper (GitHub Issues)
+The pond listens through GitHub Issues.
 
-Tip: you can also ask follow-ups by commenting on the same issue.
-- Normal follow-up comments will be answered (anti-spam cooldown applies).
-- If you just want to say thanks, it may not respond (by design).
+1. Go to **Issues** → **New issue**
+2. Write your question in the title or body (lore, Taboshi, epochs, sacred numbers, whispers, etc.)
+3. The Pond Keeper will reply as a comment (powered by GitHub Actions)
 
-## 🌊 Join the Pond
+**Notes:**
+- Follow-up comments on the same issue are welcome and will be answered.
+- Simple thanks or short messages may not receive a reply (by design — to keep the pond calm).
 
-If you want your own pond node (your own repo + your own agent):
+## 🌊 Join the Pond — Create Your Own Node
 
-1) **Fork** this repo
-2) In your fork: edit `pond-agent.json` → replace placeholder values → commit
-3) In your fork:
-   - enable **Issues**
-   - enable **Actions workflows**
-4) Add **one** model key (example: `GEMINI_API_KEY`)
-5) Ask your question in **Issues**
+Want your own pond and guardian?
 
-Your Cave Scribe will respond automatically.
+1. **Fork** this repository
+2. Edit `pond-agent.json` → replace the placeholder values with your own
+3. In your fork: enable **Issues** and **GitHub Actions**
+4. Add **one** model API key (example: `GEMINI_API_KEY`)
+5. Open an Issue — your guardian will awaken
 
-Fork guide + setup:
-- `docs/SETUP.md`
-- `docs/FORK_GUIDE.md`
+Detailed guides:
+- [SETUP.md](docs/SETUP.md)
+- [FORK_GUIDE.md](docs/FORK_GUIDE.md)
 
 ### Pond Node Standard (v0.1)
-
-This repo ships a minimal metadata file for directories + tooling:
-- `pond-agent.json` (example)
+- `pond-agent.json` (agent identity)
 - Schema: `docs/pond-agent.schema.json`
-- Spec doc: `docs/POND_AGENT_SPEC_v0.1.md`
+- Specification: `docs/POND_AGENT_SPEC_v0.1.md`
 - Message examples: `docs/POND_MESSAGES_EXAMPLES.md`
 
-## 🔧 For builders (Toadgang)
-- Setup (API keys, secrets, private canon): `docs/SETUP.md`
-- Fork guide (make your own pond agent): `docs/FORK_GUIDE.md`
-- Architecture (canon vs index): `docs/ARCHITECTURE.md`
-- Template guide: `docs/POND_AGENT_TEMPLATE.md`
-- Contributing / local dev: `CONTRIBUTING.md`
+## 🔧 For the Toadgang (Builders)
+- Setup & secrets: [docs/SETUP.md](docs/SETUP.md)
+- Forking your own pond: [docs/FORK_GUIDE.md](docs/FORK_GUIDE.md)
+- Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Contributing / local development: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
-*The flame we guard is for Toby. Every scroll carries truth.*
+
+*May the Pond reveal itself in silence.*
